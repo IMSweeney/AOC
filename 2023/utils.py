@@ -1,0 +1,3 @@
+import os
+os.environ['AOC_SESSION'] = '53616c7465645f5f7130cb84c6121b9b1cda1dccdf9a49ec5be8cbb445f45003f4e91bf96caae31027cfd5d838613f3cac41427ecef373691bb93c41dccf67b5'
+
