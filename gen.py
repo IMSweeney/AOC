@@ -3,7 +3,7 @@ import aocd
 import os
 
 YEAR = 2023
-day = 3
+day = 5
 
 if __name__ == "__main__":
     os.makedirs(f"{YEAR}", exist_ok=True)

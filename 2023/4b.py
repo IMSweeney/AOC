@@ -1,13 +1,14 @@
 import utils
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+from functools import lru_cache
 
 import aocd
 
 import logging
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 def parse(input):
@@ -26,21 +27,41 @@ def parse(input):
 @dataclass
 class Parsed:
   id: int
+  l: list
+  r: list
   
   def score(self):
-    return 0
-    
+    scoring = set(self.r).intersection(set(self.l))
+    if scoring:
+      return len(list(scoring))
+    else:
+      return 0
+      
   def __hash__(self):
     return hash(self.id)
  
 def parse_line(line):
-  pass
+  id, dat = line.split(': ')
+  id = int(id.split()[1])
+  l, r = dat.split('|')
+  l = [int(c) for c in l.split() if c.strip()]
+  r = [int(c) for c in r.split() if c.strip()]
+  return Parsed(id, l, r)
 
- 
+
 def solve(data):
+  cards = {d.id: 1 for d in data}
   score = 0
   for d in data:
-    score += d.score()
+    s = d.score()
+    log.debug(f'{d}, scored {s}')
+    num = cards[d.id]
+    log.info(f'found {num} of card {d.id}')
+    score += num
+    if s:
+      for i in range(s):
+        cards[d.id + 1 + i] += num
+    
   return score
 
 if __name__ == '__main__':
@@ -58,8 +79,8 @@ if __name__ == '__main__':
     example = page.a_pre[0]
     answer = int(page.a_code[-1])
   else:
-    example = page.b_pre[0]
-    answer = int(page.b_code[-1])
+    example = page.a_pre[0]
+    answer = 30
   
   data = parse(example)
   res = solve(data)

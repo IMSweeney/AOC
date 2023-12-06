@@ -26,21 +26,31 @@ def parse(input):
 @dataclass
 class Parsed:
   id: int
+  l: list
+  r: list
   
   def score(self):
-    return 0
-    
-  def __hash__(self):
-    return hash(self.id)
+    scoring = set(self.r).intersection(set(self.l))
+    if scoring:
+      return 2 ** (len(list(scoring)) - 1)
+    else:
+      return 0
  
 def parse_line(line):
-  pass
+  id, dat = line.split(': ')
+  id = id.split()[1]
+  l, r = dat.split('|')
+  l = [int(c) for c in l.split() if c.strip()]
+  r = [int(c) for c in r.split() if c.strip()]
+  return Parsed(id, l, r)
 
  
 def solve(data):
   score = 0
   for d in data:
-    score += d.score()
+    s = d.score()
+    log.info(f'{d}, scored {s}')
+    score += s
   return score
 
 if __name__ == '__main__':
